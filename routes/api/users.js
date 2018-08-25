@@ -3,7 +3,7 @@ const router = express.Router();
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const passport = require('passport');
 // load config
 const config = require('../../config/index');
 
@@ -57,7 +57,7 @@ router.post('/login', (req, res) => {
                       config.secretOrKey,
                       { expiresIn: 1800 },
                       (err, token) => {
-                          res.json({'token': 'Bearer' + token, success: true});
+                          res.json({'token': 'Bearer ' + token, success: true});
                       });
               } else {
                   return res.status(400).json({error: 'Invalid email/password'})
@@ -65,6 +65,13 @@ router.post('/login', (req, res) => {
           });
     });
 
+});
+
+// @route   GET api/users/login
+// @desc    Login User / Returning JWT Token
+// @access  Public
+router.get('/protected', passport.authenticate('jwt', { session: false }), (req, res) => {
+    res.json({'msg': 'success', user: req.user })
 });
 
 module.exports = router;
