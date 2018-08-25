@@ -1,5 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+
+// load configs
+const config = require('./config/index');
 
 // load routes
 const users = require('./routes/api/users');
@@ -7,7 +11,8 @@ const profile = require('./routes/api/profile');
 const posts = require('./routes/api/posts');
 
 const app = express();
-const config = require('./config/index');
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 
 mongoose.connect(config.mongoURI)
         .then(() => console.log('MongoDB connected.'))
